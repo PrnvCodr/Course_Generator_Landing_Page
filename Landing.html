@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text To Learn</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        chariot: {
+                            bg: '#0B0B0A',
+                            bgLight: '#0F0F0E',
+                            orange: '#E25814',
+                            orangeVibrant: '#FF5714',
+                            lime: '#C4FF00',
+                            terracotta: '#8A3E16',
+                            subtext: '#827E77',
+                            pillBg: '#231D16',
+                            pillText: '#A3998B',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0B0B0A;
+            font-family: 'Inter', system-ui, sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Ambient glow layers */
+        .ambient-glow {
+            position: fixed;
+            top: -160px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 900px;
+            height: 500px;
+            background: radial-gradient(ellipse at center, rgba(226, 88, 20, 0.14) 0%, rgba(255, 87, 20, 0.07) 35%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+            filter: blur(70px);
+        }
+
+        .ambient-glow-2 {
+            position: fixed;
+            top: -80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 1100px;
+            height: 350px;
+            background: radial-gradient(ellipse at center, rgba(196, 255, 0, 0.035) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+            filter: blur(90px);
+        }
+
+        /* Gradient text */
+        .gradient-action {
+            background: linear-gradient(90deg, #FF5714 0%, #C4FF00 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Glass nav */
+        .glass-nav {
+            background: rgba(15, 15, 14, 0.72);
+            backdrop-filter: blur(20px) saturate(150%);
+            -webkit-backdrop-filter: blur(20px) saturate(150%);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow:
+                0 1px 0 rgba(255, 255, 255, 0.03) inset,
+                0 20px 40px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(226, 88, 20, 0.07);
+        }
+
+        /* Glass input container */
+        .glass-input-wrap {
+            background: rgba(255, 255, 255, 0.025);
+            backdrop-filter: blur(16px) saturate(120%);
+            -webkit-backdrop-filter: blur(16px) saturate(120%);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow:
+                0 1px 0 rgba(255, 255, 255, 0.03) inset,
+                0 20px 50px rgba(0, 0, 0, 0.3),
+                0 0 0 1px rgba(138, 62, 22, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-input-wrap:hover {
+            border-color: rgba(226, 88, 20, 0.18);
+            box-shadow:
+                0 1px 0 rgba(255, 255, 255, 0.04) inset,
+                0 25px 60px rgba(0, 0, 0, 0.4),
+                0 0 24px rgba(255, 87, 20, 0.06);
+        }
+
+        .glass-input-wrap:focus-within {
+            border-color: rgba(226, 88, 20, 0.28);
+            box-shadow:
+                0 1px 0 rgba(255, 255, 255, 0.05) inset,
+                0 30px 70px rgba(0, 0, 0, 0.5),
+                0 0 32px rgba(255, 87, 20, 0.1);
+        }
+
+        /* Input field */
+        .glass-input {
+            background: transparent;
+            color: #A3998B;
+            caret-color: #FF5714;
+            border: none;
+            outline: none;
+        }
+
+        .glass-input::placeholder {
+            color: rgba(163, 153, 139, 0.4);
+        }
+
+        .glass-input:focus {
+            color: #E8E4DF;
+        }
+
+        /* Submit button */
+        .btn-terracotta {
+            background-color: #8A3E16;
+            color: #F5EDE6;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow:
+                0 4px 12px rgba(138, 62, 22, 0.3),
+                0 1px 0 rgba(255, 255, 255, 0.08) inset;
+            cursor: pointer;
+        }
+
+        .btn-terracotta:hover {
+            background-color: #A04820;
+            transform: translateY(-1px);
+            box-shadow:
+                0 8px 24px rgba(138, 62, 22, 0.4),
+                0 1px 0 rgba(255, 255, 255, 0.1) inset;
+        }
+
+        .btn-terracotta:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(138, 62, 22, 0.25);
+        }
+
+        /* Badge pills */
+        .badge-orange {
+            background: rgba(226, 88, 20, 0.1);
+            border: 1px solid rgba(226, 88, 20, 0.28);
+            color: #E25814;
+        }
+
+        .badge-green {
+            background: rgba(139, 160, 100, 0.08);
+            border: 1px solid rgba(139, 160, 100, 0.28);
+            color: #8BA064;
+        }
+
+        /* Stat badge */
+        .badge-stat {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+        }
+
+        /* Try tags */
+        .tag-earth {
+            background: #231D16;
+            color: #A3998B;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.25s ease;
+            cursor: pointer;
+        }
+
+        .tag-earth:hover {
+            background: #2D2418;
+            border-color: rgba(226, 88, 20, 0.2);
+            color: #C4B8A8;
+            transform: translateY(-1px);
+        }
+
+        .tag-earth:active {
+            transform: translateY(0);
+        }
+
+        /* Footer */
+        .glass-footer {
+            background: rgba(15, 15, 14, 0.55);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.35);
+        }
+
+        /* Nav links */
+        .nav-link {
+            color: #827E77;
+            transition: all 0.2s ease;
+            position: relative;
+            text-decoration: none;
+        }
+
+        .nav-link:hover {
+            color: #C4B8A8;
+        }
+
+        .nav-link.active {
+            background: rgba(255, 255, 255, 0.07);
+            color: #E8E4DF;
+            border: 1px solid rgba(255, 255, 255, 0.09);
+        }
+
+        /* Powered-by */
+        .badge-powered {
+            background: rgba(255, 255, 255, 0.025);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            color: #827E77;
+        }
+
+        /* Animations */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .animate-fade-up {
+            animation: fadeUp 0.75s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            opacity: 0;
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 1.2s ease forwards;
+            opacity: 0;
+        }
+
+        .delay-100 {
+            animation-delay: 0.10s;
+        }
+
+        .delay-200 {
+            animation-delay: 0.20s;
+        }
+
+        .delay-300 {
+            animation-delay: 0.30s;
+        }
+
+        .delay-400 {
+            animation-delay: 0.40s;
+        }
+
+        .delay-500 {
+            animation-delay: 0.50s;
+        }
+
+        .delay-600 {
+            animation-delay: 0.60s;
+        }
+
+        /* Noise overlay */
+        .noise-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.022;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 256px 256px;
+        }
+
+        /* Close button */
+        .btn-close {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            color: #827E77;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .btn-close:hover {
+            background: rgba(255, 255, 255, 0.09);
+            color: #C4B8A8;
+        }
+
+        /* Toast notification */
+        #toast {
+            position: fixed;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #1A140E;
+            border: 1px solid rgba(226, 88, 20, 0.3);
+            color: #E8E4DF;
+            padding: 12px 24px;
+            border-radius: 99px;
+            font-size: 13px;
+            font-weight: 500;
+            z-index: 10000;
+            opacity: 0;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            white-space: nowrap;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(226, 88, 20, 0.12);
+        }
+
+        #toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        #toast.error {
+            border-color: rgba(226, 40, 20, 0.4);
+            background: #1A0E0E;
+        }
+
+        /* Divider */
+        .divider-fade {
+            height: 1px;
+            background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.06) 50%, transparent 100%);
+        }
+
+        /* ── Uiverse animated Login button ── */
+        .uiverse {
+            --duration: 7s;
+            --easing: linear;
+            --c-color-1: rgba(255, 163, 26, 0.7);
+            --c-color-2: #1a23ff;
+            --c-color-3: #e21bda;
+            --c-color-4: rgba(255, 232, 26, 0.7);
+            --c-shadow: rgba(255, 223, 87, 0.5);
+            --c-shadow-inset-top: rgba(255, 223, 52, 0.9);
+            --c-shadow-inset-bottom: rgba(255, 250, 215, 0.8);
+            --c-radial-inner: #ffd215;
+            --c-radial-outer: #fff172;
+            --c-color: #ff0000;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-appearance: none;
+            outline: none;
+            position: relative;
+            cursor: pointer;
+            border: none;
+            display: table;
+            border-radius: 24px;
+            padding: 0;
+            margin: 0;
+            text-align: center;
+            font-weight: 600;
+            font-size: 16px;
+            letter-spacing: 0.02em;
+            line-height: 1.5;
+            color: var(--c-color);
+            background: radial-gradient(circle, var(--c-radial-inner), var(--c-radial-outer) 80%);
+            box-shadow: 0 0 14px var(--c-shadow);
+        }
+
+        .uiverse:before {
+            content: "";
+            pointer-events: none;
+            position: absolute;
+            z-index: 3;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 24px;
+            box-shadow:
+                inset 0 3px 12px var(--c-shadow-inset-top),
+                inset 0 -3px 4px var(--c-shadow-inset-bottom);
+        }
+
+        .uiverse .wrapper {
+            -webkit-mask-image: -webkit-radial-gradient(white, black);
+            overflow: hidden;
+            border-radius: 24px;
+            min-width: 160px;
+            padding: 14px 0;
+        }
+
+        .uiverse .wrapper span {
+            display: inline-block;
+            position: relative;
+            z-index: 1;
+        }
+
+        .uiverse:hover {
+            --duration: 1400ms;
+        }
+
+        .uiverse .wrapper .circle {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            filter: blur(var(--blur, 8px));
+            background: var(--background, transparent);
+            transform: translate(var(--x, 0), var(--y, 0)) translateZ(0);
+            animation: var(--animation, none) var(--duration) var(--easing) infinite;
+        }
+
+        .uiverse .wrapper .circle.circle-1,
+        .uiverse .wrapper .circle.circle-9,
+        .uiverse .wrapper .circle.circle-10 {
+            --background: var(--c-color-4);
+        }
+
+        .uiverse .wrapper .circle.circle-3,
+        .uiverse .wrapper .circle.circle-4 {
+            --background: var(--c-color-2);
+            --blur: 14px;
+        }
+
+        .uiverse .wrapper .circle.circle-5,
+        .uiverse .wrapper .circle.circle-6 {
+            --background: var(--c-color-3);
+            --blur: 16px;
+        }
+
+        .uiverse .wrapper .circle.circle-2,
+        .uiverse .wrapper .circle.circle-7,
+        .uiverse .wrapper .circle.circle-8,
+        .uiverse .wrapper .circle.circle-11,
+        .uiverse .wrapper .circle.circle-12 {
+            --background: var(--c-color-1);
+            --blur: 12px;
+        }
+
+        .uiverse .wrapper .circle.circle-1 {
+            --x: 0px;
+            --y: -40px;
+            --animation: circle-1;
+        }
+
+        .uiverse .wrapper .circle.circle-2 {
+            --x: 92px;
+            --y: 8px;
+            --animation: circle-2;
+        }
+
+        .uiverse .wrapper .circle.circle-3 {
+            --x: -12px;
+            --y: -12px;
+            --animation: circle-3;
+        }
+
+        .uiverse .wrapper .circle.circle-4 {
+            --x: 80px;
+            --y: -12px;
+            --animation: circle-4;
+        }
+
+        .uiverse .wrapper .circle.circle-5 {
+            --x: 12px;
+            --y: -4px;
+            --animation: circle-5;
+        }
+
+        .uiverse .wrapper .circle.circle-6 {
+            --x: 56px;
+            --y: 16px;
+            --animation: circle-6;
+        }
+
+        .uiverse .wrapper .circle.circle-7 {
+            --x: 8px;
+            --y: 28px;
+            --animation: circle-7;
+        }
+
+        .uiverse .wrapper .circle.circle-8 {
+            --x: 28px;
+            --y: -4px;
+            --animation: circle-8;
+        }
+
+        .uiverse .wrapper .circle.circle-9 {
+            --x: 20px;
+            --y: -12px;
+            --animation: circle-9;
+        }
+
+        .uiverse .wrapper .circle.circle-10 {
+            --x: 64px;
+            --y: 16px;
+            --animation: circle-10;
+        }
+
+        .uiverse .wrapper .circle.circle-11 {
+            --x: 4px;
+            --y: 4px;
+            --animation: circle-11;
+        }
+
+        .uiverse .wrapper .circle.circle-12 {
+            --blur: 14px;
+            --x: 52px;
+            --y: 4px;
+            --animation: circle-12;
+        }
+
+        @keyframes circle-1 {
+            33% {
+                transform: translate(0px, 16px)translateZ(0)
+            }
+
+            66% {
+                transform: translate(12px, 64px)translateZ(0)
+            }
+        }
+
+        @keyframes circle-2 {
+            33% {
+                transform: translate(80px, -10px)translateZ(0)
+            }
+
+            66% {
+                transform: translate(72px, -48px)translateZ(0)
+            }
+        }
+
+        @keyframes circle-3 {
+            33% {
+                transform: translate(20px, 12px)translateZ(0)
+            }
+
+            66% {
+                transform: translate(12px, 4px)translateZ(0)
+            }
+        }
+
+        @keyframes circle-4 {
+            33% {
+                transform: translate(76px, -12px)translateZ(0)
+            }
+
+            66% {
+                transform: translate(112px, -8px)translateZ(0)
+            }
+        }
+
+        @keyframes circle-5 {
+            33% {
+                transform: translate(84px, 28px)translateZ(0)
+            }
+
+            66% {
+                transform: translate(40px, -32px)translateZ(0)
+            }
+        }
+
+        @keyframes circle-6 {
+            33% {
+                transform: translate(28px, -16px)translateZ(0)
+            }
+
+            66% {
+                transform: translate(76px, -56px)translateZ(0)
+            }
+        }
+
+        @keyframes circle-7 {
+            33% {
+                transform: translate(8px, 28px)translateZ(0)
+            }
+
+            66% {
+                transform: translate(20px, -60px)translateZ(0)
+            }
+        }
+
+        @keyframes circle-8 {
+            33% {
+                transform: translate(32px, -4px)translateZ(0)
+            }
+
+            66% {
+                transform: translate(56px, -20px)translateZ(0)
+            }
+        }
+
+        @keyframes circle-9 {
+            33% {
+                transform: translate(20px, -12px)translateZ(0)
+            }
+
+            66% {
+                transform: translate(80px, -8px)translateZ(0)
+            }
+        }
+
+        @keyframes circle-10 {
+            33% {
+                transform: translate(68px, 20px)translateZ(0)
+            }
+
+            66% {
+                transform: translate(100px, 28px)translateZ(0)
+            }
+        }
+
+        @keyframes circle-11 {
+            33% {
+                transform: translate(4px, 4px)translateZ(0)
+            }
+
+            66% {
+                transform: translate(68px, 20px)translateZ(0)
+            }
+        }
+
+        @keyframes circle-12 {
+            33% {
+                transform: translate(56px, 0px)translateZ(0)
+            }
+
+            66% {
+                transform: translate(60px, -32px)translateZ(0)
+            }
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col relative">
+
+    <!-- Noise texture -->
+    <div class="noise-overlay"></div>
+
+    <!-- Ambient glow -->
+    <div class="ambient-glow animate-fade-in"></div>
+    <div class="ambient-glow-2 animate-fade-in delay-200"></div>
+
+    <!-- Toast notification -->
+    <div id="toast"></div>
+
+    <!-- Main wrapper -->
+    <div class="relative z-10 flex flex-col min-h-screen">
+
+        <!-- ═══════════ NAVIGATION ═══════════ -->
+        <header class="pt-5 px-4 sm:px-6 lg:px-8 flex-shrink-0">
+            <nav
+                class="glass-nav max-w-4xl mx-auto rounded-full px-4 py-2.5 flex items-center justify-between gap-4 animate-fade-up">
+
+                <!-- Logo -->
+                <div class="flex items-center gap-2.5 flex-shrink-0">
+                    <div
+                        class="w-8 h-8 rounded-full bg-[#FF5714] flex items-center justify-center shadow-lg shadow-orange-900/20 flex-shrink-0">
+                        <div class="w-3 h-3 rounded-full bg-[#0B0B0A] opacity-30"></div>
+                    </div>
+                    <span class="text-white font-bold tracking-wide text-sm uppercase">Text To Learn</span>
+                </div>
+
+                <!-- Nav Links (desktop) -->
+                <div class="hidden md:flex items-center gap-0.5 flex-1 justify-center">
+                    <a href="#" id="nav-home"
+                        class="nav-link active px-4 py-1.5 rounded-full text-sm font-medium">Home</a>
+                    <a href="https://github.com/PrnvCodr/Course_Generator"
+                        class="nav-link px-4 py-1.5 rounded-full text-sm font-medium">Docs</a>
+                    <a href="mailto:pranavkashyap.official@gmail.com"
+                        class="nav-link px-4 py-1.5 rounded-full text-sm font-medium">Contact</a>
+                </div>
+
+                <!-- Right side: AI-POWERED + FREE badges + close -->
+                <div class="flex items-center gap-2 flex-shrink-0">
+                    <span
+                        class="badge-orange hidden sm:inline-flex px-2.5 py-1 rounded-full text-[10px] font-semibold tracking-wide uppercase">AI-Powered</span>
+                    <span
+                        class="badge-green  hidden sm:inline-flex px-2.5 py-1 rounded-full text-[10px] font-semibold tracking-wide uppercase">Free</span>
+                    <button id="close-btn" class="btn-close w-8 h-8 rounded-full flex items-center justify-center ml-1">
+                        <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+                            <path d="M1 1L13 13M13 1L1 13" stroke="currentColor" stroke-width="1.5"
+                                stroke-linecap="round" />
+                        </svg>
+                    </button>
+                </div>
+            </nav>
+        </header>
+
+        <!-- ═══════════ HERO SECTION ═══════════ -->
+        <main class="flex-1 flex flex-col items-center justify-center px-4 sm:px-6 py-6 sm:py-10">
+
+            <!-- Stat badge -->
+            <div class="badge-stat flex items-center gap-3 px-4 py-2.5 rounded-full mb-8 animate-fade-up delay-100">
+                <div
+                    class="w-6 h-6 rounded-full bg-gradient-to-br from-[#FF5714] to-[#8A3E16] flex items-center justify-center flex-shrink-0">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" class="text-white">
+                        <path d="M6 2C4.5 2 3 3 2.5 4.5C2 6 3 8 6 10C9 8 10 6 9.5 4.5C9 3 7.5 2 6 2Z"
+                            fill="currentColor" opacity="0.9" />
+                    </svg>
+                </div>
+                <span class="text-[#A3998B] text-sm font-medium">Prompt the text, learn what’s next.</span>
+                <span class="text-[#827E77] text-sm">|</span>
+                <a href="#" id="launch-btn"
+                    class="text-[#FF5714] text-sm font-semibold hover:text-[#C4FF00] transition-colors duration-200">Up
+                    & Running</a>
+            </div>
+
+            <!-- Main heading -->
+            <h1 class="text-center max-w-4xl mx-auto mb-5 animate-fade-up delay-200">
+                <span class="block text-white text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.1]">
+                    TEXT TO LEARN
+                </span>
+                <span class="block text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.1] mt-1">
+                    <span class="gradient-action">Turn Any Topic Into a Complete Course</span>
+                </span>
+            </h1>
+
+            <!-- Subheading -->
+            <p
+                class="text-center max-w-xl mx-auto text-[#827E77] text-base sm:text-lg leading-relaxed mb-8 animate-fade-up delay-300">
+                An AI-powered platform that transforms any prompt into structured, multi-module courses with
+                rich media and interactive quizzes.
+                Featuring text-to-speech, seamless PDF exports, and persistent storage, it brings personalized
+                education straight to production.
+            </p>
+
+            <!-- Login Button (animated uiverse) -->
+            <div class="flex justify-center mb-5 animate-fade-up delay-400">
+                <button id="login-btn" class="uiverse">
+                    <div class="wrapper">
+                        <span>Sign Up</span>
+                        <div class="circle circle-1"></div>
+                        <div class="circle circle-2"></div>
+                        <div class="circle circle-3"></div>
+                        <div class="circle circle-4"></div>
+                        <div class="circle circle-5"></div>
+                        <div class="circle circle-6"></div>
+                        <div class="circle circle-7"></div>
+                        <div class="circle circle-8"></div>
+                        <div class="circle circle-9"></div>
+                        <div class="circle circle-10"></div>
+                        <div class="circle circle-11"></div>
+                        <div class="circle circle-12"></div>
+                    </div>
+                </button>
+            </div>
+
+            <!-- Try suggestion tags -->
+            <div class="flex flex-wrap items-center justify-center gap-2 mb-8 animate-fade-up delay-500">
+                <span class="text-[#827E77] text-xs">Try:</span>
+                <button class="tag-earth px-3.5 py-1.5 rounded-full text-xs font-medium" data-tag="Viral Hooks">Viral
+                    Hooks</button>
+                <button class="tag-earth px-3.5 py-1.5 rounded-full text-xs font-medium"
+                    data-tag="Content Calendar">Content Calendar</button>
+                <button class="tag-earth px-3.5 py-1.5 rounded-full text-xs font-medium" data-tag="Script Writer">Script
+                    Writer</button>
+                <button class="tag-earth px-3.5 py-1.5 rounded-full text-xs font-medium" data-tag="Trend Finder">Trend
+                    Finder</button>
+            </div>
+
+            <!-- Powered by -->
+            <div class="badge-powered flex items-center gap-2 px-4 py-2 rounded-full mb-4 animate-fade-up delay-600">
+                <span class="text-xs">Built by</span>
+                <div
+                    class="w-4 h-4 rounded-full bg-gradient-to-br from-[#C4FF00] to-[#8BA064] flex items-center justify-center">
+                    <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
+                        <circle cx="4" cy="4" r="3" fill="#0B0B0A" />
+                    </svg>
+                </div>
+                <span class="text-xs font-semibold text-[#A3998B]"> 𝐏𝐫𝐚𝐧𝐚𝐯</span>
+            </div>
+
+        </main>
+
+        <!-- ═══════════ FOOTER ═══════════ -->
+        <footer class="px-4 sm:px-6 lg:px-8 pb-5 flex-shrink-0 animate-fade-up delay-600">
+            <div class="glass-footer max-w-4xl mx-auto rounded-2xl px-6 py-4 flex items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-7 h-7 rounded-full bg-[#FF5714] flex items-center justify-center flex-shrink-0">
+                        <div class="w-2.5 h-2.5 rounded-full bg-[#0B0B0A] opacity-30"></div>
+                    </div>
+                    <div>
+                        <span class="text-white font-bold text-sm tracking-wide uppercase block">TEXT TO LEARN</span>
+                        <span class="text-[#827E77] text-xs">Stop guessing where to Study From Make your own course your
+                            way & Execute.</span>
+                    </div>
+                </div>
+                <span class="text-[#827E77] text-xs font-medium tracking-wider uppercase hidden sm:block">Copyright 2026
+                    Text To Learn</span>
+            </div>
+        </footer>
+
+    </div><!-- /main wrapper -->
+
+    <script>
+        /* ─── Toast helper ─── */
+        function showToast(msg, type = 'default') {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.className = 'show' + (type === 'error' ? ' error' : '');
+            clearTimeout(toast._timeout);
+            toast._timeout = setTimeout(() => { toast.className = ''; }, 3200);
+        }
+
+        /* ─── Parallax glows on mouse move ─── */
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth - 0.5) * 18;
+            const y = (e.clientY / window.innerHeight - 0.5) * 10;
+            const g1 = document.querySelector('.ambient-glow');
+            const g2 = document.querySelector('.ambient-glow-2');
+            if (g1) g1.style.transform = `translateX(calc(-50% + ${x * 0.5}px)) translateY(${y * 0.3}px)`;
+            if (g2) g2.style.transform = `translateX(calc(-50% + ${x * 0.3}px)) translateY(${y * 0.2}px)`;
+        });
+
+        /* ─── Login button — navigate to app / Auth0 ─── */
+        document.getElementById('login-btn').addEventListener('click', () => {
+            showToast('🚀  Redirecting to login...');
+            
+            // CONFIGURATION: 
+            // - Option A: Set to your Auth0 Universal Login URL or direct Auth0 authorize endpoint.
+            // - Option B: Set to your application's login handler route (e.g. '/login' or '/api/auth/login').
+            const LOGIN_URL = '#'; // Update this with your Auth0 login endpoint or local login route
+            
+            setTimeout(() => {
+                if (LOGIN_URL !== '#') {
+                    window.location.href = LOGIN_URL;
+                } else {
+                    showToast('ℹ️ Please configure LOGIN_URL in the HTML script tag.', 'error');
+                }
+            }, 800);
+        });
+
+        /* ─── Try: suggestion tags ─── */
+        document.querySelectorAll('.tag-earth[data-tag]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                showToast(`💡  "${btn.dataset.tag}" — Login to get started!`);
+            });
+        });
+
+        /* ─── X close button — hide header ─── */
+        document.getElementById('close-btn').addEventListener('click', () => {
+            const header = document.querySelector('header');
+            header.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+            header.style.opacity = '0';
+            header.style.transform = 'translateY(-12px)';
+            setTimeout(() => { header.style.display = 'none'; }, 320);
+        });
+
+        /* ─── "Up & Running" link ─── */
+        document.getElementById('launch-btn').addEventListener('click', (e) => {
+            e.preventDefault();
+            showToast('✅  Text To Learn is live — click Login to get started!');
+        });
+
+        /* ─── Nav active state toggle ─── */
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function () {
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+
+</html>
