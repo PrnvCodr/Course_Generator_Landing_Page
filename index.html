@@ -758,7 +758,7 @@
             <div class="flex justify-center mb-5 animate-fade-up delay-400">
                 <button id="login-btn" class="uiverse">
                     <div class="wrapper">
-                        <span>Sign Up</span>
+                        <span>Visit</span>
                         <div class="circle circle-1"></div>
                         <div class="circle circle-2"></div>
                         <div class="circle circle-3"></div>
@@ -778,14 +778,14 @@
             <!-- Try suggestion tags -->
             <div class="flex flex-wrap items-center justify-center gap-2 mb-8 animate-fade-up delay-500">
                 <span class="text-[#827E77] text-xs">Try:</span>
-                <button class="tag-earth px-3.5 py-1.5 rounded-full text-xs font-medium" data-tag="Viral Hooks">Viral
-                    Hooks</button>
+                <button class="tag-earth px-3.5 py-1.5 rounded-full text-xs font-medium" data-tag="Viral Hooks">Learning
+                    DSA</button>
+                <button class="tag-earth px-3.5 py-1.5 rounded-full text-xs font-medium" data-tag="Content Calendar">1
+                    Shot Revision</button>
                 <button class="tag-earth px-3.5 py-1.5 rounded-full text-xs font-medium"
-                    data-tag="Content Calendar">Content Calendar</button>
-                <button class="tag-earth px-3.5 py-1.5 rounded-full text-xs font-medium" data-tag="Script Writer">Script
-                    Writer</button>
-                <button class="tag-earth px-3.5 py-1.5 rounded-full text-xs font-medium" data-tag="Trend Finder">Trend
-                    Finder</button>
+                    data-tag="Script Writer">Youtube Learning Material</button>
+                <button class="tag-earth px-3.5 py-1.5 rounded-full text-xs font-medium" data-tag="Trend Finder">Quiz
+                    Before Exams</button>
             </div>
 
             <!-- Powered by -->
@@ -842,21 +842,11 @@
             if (g2) g2.style.transform = `translateX(calc(-50% + ${x * 0.3}px)) translateY(${y * 0.2}px)`;
         });
 
-        /* ─── Login button — navigate to app / Auth0 ─── */
+        /* ─── Sign Up button — navigate directly to main application ─── */
         document.getElementById('login-btn').addEventListener('click', () => {
-            showToast('🚀  Redirecting to login...');
-            
-            // CONFIGURATION: 
-            // - Option A: Set to your Auth0 Universal Login URL or direct Auth0 authorize endpoint.
-            // - Option B: Set to your application's login handler route (e.g. '/login' or '/api/auth/login').
-            const LOGIN_URL = '#'; // Update this with your Auth0 login endpoint or local login route
-            
+            showToast('🚀  Redirecting to Sign Up...');
             setTimeout(() => {
-                if (LOGIN_URL !== '#') {
-                    window.location.href = LOGIN_URL;
-                } else {
-                    showToast('ℹ️ Please configure LOGIN_URL in the HTML script tag.', 'error');
-                }
+                window.location.href = 'https://course-generator-3w6d.vercel.app/';
             }, 800);
         });
 
